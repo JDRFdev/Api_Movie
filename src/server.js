@@ -7,6 +7,7 @@ import notFound from './middlewars/notFound.js';
 import helmet from 'helmet';
 import morgan from 'morgan';
 import authRouter from './routes/auth.routes.js'
+import authVerifyToken from './middlewars/authVerifyToken.js';
 class Server{
     #app;
     #port;
@@ -20,6 +21,7 @@ class Server{
         this.#port= config.port;
         this.middlewares();
         this.authRoutes();
+        this.authmiddlewar();
         this.routes();
         this.notFoundhandler();
         this.errorhandler();
@@ -33,10 +35,13 @@ class Server{
         const coreOptions={
             "methods" : 'GET'
         }
-        this.#app.use(helmet);
+        this.#app.use(helmet());
         this.#app.use(cors(coreOptions));
         this.#app.use(morgan('dev'));
         this.#app.use(express.json());
+    }
+    authmiddlewar(){
+        this.#app.use(authVerifyToken);
     }
     routes(){
         this.#app.use(this.#appiPaths.movies,movieRouter);
